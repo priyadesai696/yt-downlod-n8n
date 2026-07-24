@@ -5,7 +5,6 @@ import os
 
 app = FastAPI()
 
-# Copy secret cookies file to a writable location at startup
 COOKIES_PATH = "/tmp/cookies.txt"
 if os.path.exists("/etc/secrets/cookies.txt"):
     shutil.copy("/etc/secrets/cookies.txt", COOKIES_PATH)
@@ -17,10 +16,15 @@ def home():
 @app.get("/download")
 def download(url: str):
     ydl_opts = {
-    'format': 'best[ext=mp4]/best',
-    'quiet': True,
-    'cookiefile': COOKIES_PATH
-}
+        'format': 'best',
+        'quiet': True,
+        'cookiefile': COOKIES_PATH,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web']
+            }
+        }
+    }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
