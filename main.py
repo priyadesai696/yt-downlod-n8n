@@ -9,7 +9,11 @@ def home():
 
 @app.get("/download")
 def download(url: str):
-    ydl_opts = {'format': 'best', 'quiet': True}
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+        'cookiefile': '/etc/secrets/cookies.txt'
+    }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
